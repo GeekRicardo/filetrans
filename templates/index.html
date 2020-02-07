@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>index - Welcome [{{username}}]</title>
+    <link rel="shortcut icon " type="images/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/toastr/css/toastr.min.css">
+    {{ dropzone.load_css() }}
+    <script src="/static/jquery/jquery.min.js"></script>
+    <script src="/static/toastr/js/toastr.min.js"></script>
+    {{ dropzone.load_js() }}
+    <style>
+    html,
+    body,
+    .container {
+        width: 100%;
+        height: 100%;
+    }
+
+    textarea {
+        width: 65%;
+        height: 50%;
+    }
+
+    .upload {
+        margin: 5%;
+    }
+    .user{
+        position: fixed;
+        top: 5px;
+        right: 5px;
+    }
+    </style>
+    <script>
+    $(function() {
+        $('#sub').click(function() {
+            var txt = $('#text');
+            if (txt.val() != "") {
+                $.ajax({
+                    url: '/setmsg',
+                    type: 'POST',
+                    data: { 'text': txt.val() },
+                    success: function(data) {
+                        if (data == 'ok') {
+                            $('#text').val("");
+                        }
+                    }
+                });
+            }
+        });
+    });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="user">welcome,{{username}}
+		<br><br>
+		<a href='/uuid'><button class='btn btn-primary'>uuid</button></a>
+	</div>
+        <textarea name="text" id='text'></textarea>
+        <!-- <button class="btn btn-primary"  id="set">提交</button>--><br>
+        <a href='/msg'><button class="btn btn-success">给你看的</button></a>
+        <a href='/filelist'><button class="btn btn-success">文件列表</button></a>
+        <button class="btn btn-primary" id="sub">发送</button>
+        <div class="upload">
+            {{ dropzone.create(action='/file') }}
+        </div>
+    </div>
+    <script>
+        {% if msg %}
+             $(function () {
+                toastr.success('{{msg}}');
+            });
+        {% endif %}
+       
+    </script>
+</body>
+
+</html>

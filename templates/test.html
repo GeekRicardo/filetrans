@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="http://menvscode.com/public/js/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.bootcss.com/clipboard.js/2.0.0/clipboard.js"></script>
+</head>
+<body>
+    <pre id="bar">menvscode.com - 前端博客</pre>
+    <button id='btn' class="btn" data-clipboard-action="copy" data-clipboard-target="#bar">Cut</button>
+    <script>
+        var clipboard = new ClipboardJS('#btn');
+        clipboard.on('success', function(e) {
+            console.log(e);
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+    </script>
+</body>
+</html>

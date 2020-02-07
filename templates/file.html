@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zn_ch">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Download</title>
+    <link rel="shortcut icon " type="images/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <script src="/static/jquery/jquery.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+    $(function() {
+        $('#btn').click(function() {
+            location.reload();
+        });
+        // $('.del').click(function () {
+        //     var filename = $(this).parent().attr('filename');
+        //     $.ajax({
+        //         url: '/del',
+        //         type: 'post',
+        //         data: {'filename':filename},
+        //         success: function  (data) {
+
+        //         }
+        //     })
+        // })
+    })
+    </script>
+    <style>
+        .container{
+            position: relative;
+            padding-top: 5%;
+	    padding-left: 5%;
+	    padding-right: 5%;
+        }
+    .info {
+        /*margin-left: 30%;*/
+        float: right;
+    }
+
+    .time {
+        margin-right: 5%;
+        float: right;
+    }
+
+    .filename {
+        width: 30%;
+        margin-right: 10%;
+    }
+
+    .oper {
+        position: fixed;
+        top: 10%;
+        left: 1%;
+        z-index: 999;
+    }
+    .oper button {
+        margin: 5px;
+    }
+
+    li {
+        position: relative;
+    }
+
+    .delbtn {
+        position: absolute;
+        left: 35%;
+        top: 3px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="oper">
+            <h3>文件列表</h3>
+            <a href="/" title="">
+                <button class="btn btn-primary">回到首页</button>
+            </a><br>
+            <button id='btn' class="btn btn-success">刷新一下</button></div>
+            <ul class="list-group">
+                {% for file in file_list %}
+                    <li class="list-group-item" filename="{{ file[0] }}">
+                        <span class="filename">{{ file[0] }} </span>
+                        <div class="delbtn">
+			    <a href="{{ url_for('download',filename= file[0]) }}" methods="GET">
+				<button class="btn btn-success del">下载</button>
+                            </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href='/open/{{ file[0] }}'>
+                                <button class="btn btn-error del">打开</button>
+                            </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href='/del/{{ file[0] }}'>
+                                <button class="btn btn-danger del">删除</button>
+                            </a>
+                        </div>
+                        <span class="time">{{ file[1] }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+    </div>
+</body>
+<script>
+    {% if msg %}
+    toastr.info("{{ msg }}");
+    {% endif %}
+</script>
+</html>

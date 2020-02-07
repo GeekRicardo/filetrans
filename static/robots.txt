@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /download/*
+Disallow: /open/*
+Disallow: /setmsg
+Allow: /filelist
+Allow: /msg
+Disallow: /upload
+Allow: /uuid
