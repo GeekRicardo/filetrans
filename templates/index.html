@@ -96,6 +96,9 @@
         <div class="user">
             welcome,{{username}}
             <br><br>
+            {%if username == '游客' %}
+            <a href='/login'><button class='btn btn-success'>登录</button></a>
+            {%endif%}
             <a href='/uuid'><button class='btn btn-primary'>uuid</button></a>
 	    </div>
         <textarea name="text" id='text'></textarea>
