@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, render_template, make_response, send_from_directory, redirect, url_for, session, Response
+import subprocess
 import os
 import time
 import uuid
@@ -77,13 +78,19 @@ def login():
         print(user)
         if(user):
             session['username'] = user.UserName
-            response = make_response("ok")
+            response = make_response(render_template('index'))
             response.set_cookie('username', user.UserName,
                                 max_age=10 * 60 * 60 * 24 * 365)
             return response
         else:
             response = make_response("error")
             return response
+
+
+@app.route('/terminal/[<cmd>]')
+def terminal(cmd):
+    print(cmd)
+    return cmd
 
 
 @app.route('/msg')
@@ -202,7 +209,7 @@ def openfile(filename):
         with open(path + filename, 'r') as f:
             content = f.read()
         return render_template('msg.html', msg=content)
-    elif(filetype in ['png', 'jpg']):
+    elif(filetype.lower() in ['png', 'jpg', 'jpeg']):
         #image = open("static/uploads/{}".format(filename), 'r')
         #resp = Response(image, mimetype="image/jpeg" if filetype == 'jpg' else 'image/png')
         #img = ''
@@ -213,10 +220,6 @@ def openfile(filename):
     else:
         return redirect(url_for('getfilelist'))
 
-
-@app.route('/test')
-def test():
-    return render_template('test.html')
 
 @app.route('/robots.txt')
 @app.route('/sitemap.xml')
@@ -229,5 +232,5 @@ def get_uuid():
     return render_template('msg.html', msg=uid)
 
 if __name__ == "__main__":
-    #app.run('0.0.0.0', 9999, debug=True, threaded=True)
-    app.run('0.0.0.0', 9999, debug=True, threaded=True, ssl_context=('./ssl.crt', './ssl.key'))
+    app.run('0.0.0.0', 9999, debug=True, threaded=True)
+    # app.run('0.0.0.0', 9999, debug=True, threaded=True, ssl_context=('./ssl.crt', './ssl.key'))
