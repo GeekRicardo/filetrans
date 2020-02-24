@@ -23,6 +23,7 @@
     #text {
         width: 65%;
         height: 50%;
+        padding: 8px;
     }
 
     #terminal {
@@ -57,7 +58,35 @@
                 });
             }
         });
-        // $('#terminal').
+        $('#terminal').keyup(function(e){
+            if(e.keyCode == 13){
+                var cmd = $('#terminal').val().trim();
+                if(cmd == '')
+                    return;
+                $.ajax({
+                    url: '/terminal/[' + cmd + ']',
+                    type: 'POST',
+                    success: function(data){
+                        if(data.errcode == 0){
+                            $('#text').val($('#terminal').val() + '\t' + data.output);
+                            $('#terminal').val('');
+                        }else if(data.errcode == -1){
+                            toastr.warning('not success');
+                            $('#text').val($('#terminal').val() + '\t' + data.output);
+                            $('#terminal').val('');
+                        }else{
+                            toastr.info('maybe not success.')
+                            $('#text').val($('#terminal').val() + '\t' + data.output);
+                            $('#terminal').val('');
+                        }
+                    },
+                    error: function(e){
+                        console.log(e);
+                        toastr.warning('网络错误')
+                    }
+                })
+            }
+        });
     });
     </script>
 </head>
@@ -70,8 +99,7 @@
             <a href='/uuid'><button class='btn btn-primary'>uuid</button></a>
 	    </div>
         <textarea name="text" id='text'></textarea>
-        <textarea name="terminal" id="terminal" cols="70" rows="20" value='[Ricardo] ->'> 
-        </textarea>
+        <textarea name="terminal" id="terminal" cols="70" rows="5" text='[Ricardo] ->'></textarea>
         <!-- <label for="terminal">Ricardo -> </label> -->
         <!-- <button class="btn btn-primary"  id="set">提交</button>--><br>
         <a href='/msg'><button class="btn btn-success">给你看的</button></a>

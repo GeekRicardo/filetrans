@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, render_template, make_response, send_from_directory, redirect, url_for, session, Response
+from flask import Flask, request, render_template, make_response, send_from_directory, redirect, url_for, session, jsonify
 import subprocess
 import os
 import time
@@ -86,10 +86,32 @@ def login():
         return response
 
 
-@app.route('/terminal/[<cmd>]')
+@app.route('/terminal/[<cmd>]', methods=['POST'])
 def terminal(cmd):
     print(cmd)
-    return cmd
+    cmd = cmd.strip().split(' ')
+    try:
+        out_bytes = subprocess.check_output(list(cmd))
+        out_put = out_bytes.decode('utf-8').replace('\n', '\n\t')
+        print(out_put)
+        return jsonify({
+            'errcode': 0,
+            'output': out_put
+        })
+    except subprocess.CalledProcessError as e:
+        out_bytes = e.output       # Output generated before error
+        code      = e.returncode   # Return code
+        out_put = out_bytes.decode('utf-8')
+        return jsonify({
+            'errcode': code,
+            'output': out_put
+        })
+    except Exception as e:
+        print(e)
+        return jsonify({
+            'errcode': -1,
+            'output': str(e)
+        })
 
 
 @app.route('/msg')
