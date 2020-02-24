@@ -20,9 +20,15 @@
         height: 100%;
     }
 
-    textarea {
+    #text {
         width: 65%;
         height: 50%;
+    }
+
+    #terminal {
+        background-color: black;
+        color: cornsilk;
+        padding: 5px;
     }
 
     .upload {
@@ -51,17 +57,22 @@
                 });
             }
         });
+        // $('#terminal').
     });
     </script>
 </head>
 
 <body>
     <div class="container">
-        <div class="user">welcome,{{username}}
-		<br><br>
-		<a href='/uuid'><button class='btn btn-primary'>uuid</button></a>
-	</div>
+        <div class="user">
+            welcome,{{username}}
+            <br><br>
+            <a href='/uuid'><button class='btn btn-primary'>uuid</button></a>
+	    </div>
         <textarea name="text" id='text'></textarea>
+        <textarea name="terminal" id="terminal" cols="70" rows="20" value='[Ricardo] ->'> 
+        </textarea>
+        <!-- <label for="terminal">Ricardo -> </label> -->
         <!-- <button class="btn btn-primary"  id="set">提交</button>--><br>
         <a href='/msg'><button class="btn btn-success">给你看的</button></a>
         <a href='/filelist'><button class="btn btn-success">文件列表</button></a>
@@ -71,13 +82,22 @@
         </div>
     </div>
     <script>
-        {% if msg %}
-             $(function () {
-                toastr.success('{{msg}}');
-            });
-        {% endif %}
-       
+        toastr.options = {
+            "closeButton": true, //是否显示关闭按钮
+            "debug": false, //是否使用debug模式
+            "positionClass": "toast-top-center",//弹出窗的位置
+            "showDuration": "300",//显示的动画时间
+            "hideDuration": "1000",//消失的动画时间
+            "timeOut": "5000", //展现时间
+            "extendedTimeOut": "1000",//加长展示时间
+            "showEasing": "swing",//显示时的动画缓冲方式
+            "hideEasing": "linear",//消失时的动画缓冲方式
+            "showMethod": "fadeIn",//显示时的动画方式
+            "hideMethod": "fadeOut" //消失时的动画方式
+        };
+        {%if info %}
+        toastr.success('{{info}}');
+        {%endif%}
     </script>
 </body>
-
 </html>

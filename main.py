@@ -61,7 +61,9 @@ def login_require(func):
 def index():
     try:
         user = get_user()
-        return render_template('index.html', username=user.UserName)
+        print('index -> ', user)
+        info = request.args.get('info')
+        return render_template('index.html', username=user.UserName, info='【%s】欢迎回来！'%user.UserName)
     except:
         return render_template('index.html', username='游客')
 
@@ -75,16 +77,13 @@ def login():
         pwd = request.form['pwd']
         user = db.session.query(User).filter_by(
             UserName=username, Passwd=pwd).first()
-        print(user)
+        print('login -> ', user)
+        response = make_response(redirect('/?info=登陆成功'))
         if(user):
             session['username'] = user.UserName
-            response = make_response(render_template('index'))
             response.set_cookie('username', user.UserName,
                                 max_age=10 * 60 * 60 * 24 * 365)
-            return response
-        else:
-            response = make_response("error")
-            return response
+        return response
 
 
 @app.route('/terminal/[<cmd>]')
