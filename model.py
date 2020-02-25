@@ -17,6 +17,14 @@ class User(db.Model):
 
     def __str__(self):
         return self.UserName
+    
+    def __init__(self, **kwargs):
+        super().__init__()
+        if(not len(kwargs) == 0):
+            self.ID = kwargs.get('ID')
+            self.UserName = kwargs.get('UserName')
+            self.Passwd = kwargs.get('Passwd')
+            self.Level = kwargs.get('Level')
 
 
 class Msg(db.Model):
