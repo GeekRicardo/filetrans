@@ -5,6 +5,7 @@ import os
 import time
 import uuid
 import base64
+import hashlib
 
 from PIL import Image
 from io import BytesIO
@@ -283,7 +284,10 @@ def static_from_root():
 @app.route('/uuid')
 def get_uuid():
     uid = uuid.uuid1()
-    return render_template('msg.html', msg=uid)
+    m = hashlib.md5()
+    m.update(str(uid).encode(encoding='utf-8'))
+    md5_uuid = m.hexdigest()
+    return render_template('msg.html', msg=md5_uuid)
 
 if __name__ == "__main__":
     app.run('0.0.0.0', 9999, debug=True, threaded=True)
