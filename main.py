@@ -281,13 +281,19 @@ def openfile(filename):
 def static_from_root():
     return send_from_directory('static', request.path[1:])
 
-@app.route('/uuid')
+@app.route('/uuid', methods=['GET', 'POST'])
 def get_uuid():
     uid = uuid.uuid1()
     m = hashlib.md5()
     m.update(str(uid).encode(encoding='utf-8'))
     md5_uuid = m.hexdigest()
-    return render_template('msg.html', msg=md5_uuid)
+    if request.method == 'GET':
+        return render_template('msg.html', msg=md5_uuid)
+    elif request.method == 'POST':
+        return jsonify({
+            'timestamp': time.time()[:11],
+            'uuid': md5_uuid
+        })
 
 if __name__ == "__main__":
     app.run('0.0.0.0', 9999, debug=True, threaded=True)
