@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, render_template, make_response, send_from_directory, redirect, url_for, session, jsonify
+from flask import Flask, request, render_template, make_response, send_from_directory, redirect, url_for, session, jsonify, Response
 import subprocess
 import os
 import time
@@ -153,7 +153,7 @@ def get_user():
         user = db.session.query(User).filter_by(UserName=username).first()
         return user
     except:
-        return {'UserName': '游客', 'UserLevel': 1000}
+        return User(UserName='游客', UserLevel = 1000)
 
 
 @app.route('/del/<filename>', endpoint='delfile')
@@ -176,16 +176,9 @@ def renamefile(old, newname):
         return 'error'
 
 
-def pil_base64(image):
-    img_buffer = BytesIO()
-    image.save(img_buffer, format='JPEG')
-    byte_data = img_buffer.getvalue()
-    base64_str = base64.b64encode(byte_data)
-    return base64_str
-
 def image_to_base64(image_path, img_type):
     img = Image.open(image_path)
-    img.thumbnail((250, 150))
+    img.thumbnail((800, 600))
     output_buffer = BytesIO()
     img.save(output_buffer, format=img_type)
     byte_data = output_buffer.getvalue()
