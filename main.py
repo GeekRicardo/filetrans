@@ -185,7 +185,7 @@ def pil_base64(image):
 
 def image_to_base64(image_path, img_type):
     img = Image.open(image_path)
-    img.thumbnail((150, 80))
+    img.thumbnail((250, 150))
     output_buffer = BytesIO()
     img.save(output_buffer, format=img_type)
     byte_data = output_buffer.getvalue()
