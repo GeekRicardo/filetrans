@@ -6,6 +6,9 @@ import time
 import uuid
 import base64
 
+from PIL import Image
+from io import BytesIO
+
 
 from flask_dropzone import Dropzone
 
@@ -161,6 +164,32 @@ def delfile(filename):
     # return getfilelist(options="删除成功")
 
 
+@app.route('/rename/<old>/<newname>')
+def renamefile(old, newname):
+    if os.path.exists(path + old):
+        os.rename(path + old, path + newname)
+        return 'ok'
+    else:
+        return 'error'
+
+
+def pil_base64(image):
+    img_buffer = BytesIO()
+    image.save(img_buffer, format='JPEG')
+    byte_data = img_buffer.getvalue()
+    base64_str = base64.b64encode(byte_data)
+    return base64_str
+
+def image_to_base64(image_path, img_type):
+    img = Image.open(image_path)
+    img.thumbnail((150, 80))
+    output_buffer = BytesIO()
+    img.save(output_buffer, format=img_type)
+    byte_data = output_buffer.getvalue()
+    base64_str = base64.b64encode(byte_data)
+    return base64_str
+
+
 @app.route('/filelist', endpoint='getfilelist')
 @login_require
 def getfilelist(options=None):
@@ -173,7 +202,15 @@ def getfilelist(options=None):
         for f in files:
             filetime = time.strftime(
                 "%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(path + '/' + f)))
-            filedict.append((f, filetime))
+            thum, t = '', ''
+            if(f.split('.')[-1] in ['jpg', 'jpeg']):
+                thum = str(image_to_base64(path + f, 'JPEG')).split("'")[1]
+                
+                t = 'jpg'
+            elif(f.split('.')[-1] in ['png']):
+                thum = str(image_to_base64(path + f, 'PNG')).split("'")[1]
+                t = 'png'
+            filedict.append((f, filetime, thum, t))
     return render_template('file.html', file_list=filedict, msg=options)
 
 

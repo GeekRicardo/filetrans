@@ -6,97 +6,149 @@
     <title>Download</title>
     <link rel="shortcut icon " type="images/x-icon" href="/static/favicon.ico">
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/dialog/dialog.css">
     <script src="/static/jquery/jquery.min.js"></script>
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/dialog/dialog.js"></script>
     <script>
-    $(function() {
-        $('#btn').click(function() {
-            location.reload();
+        $(function () {
+            $('#btn').click(function () {
+                location.reload();
+            });
+            $('.list-group-item').mouseover(function(e){
+                // var next = $('#' + $(this).attr('imgid'));
+                var next = $(this).children('img');
+                console.log(next[0].tagName);
+                if(next[0].tagName == 'IMG'){
+                    next.removeAttr('hidden');
+                }
+            });
+            $('.list-group-item').mouseout(function(e){
+                // var next = $('#' + $(this).attr('imgid'));
+                var next = $(this).children('img');
+                if(next[0].tagName == 'IMG'){
+                    next.attr('hidden', 'hidden');
+                }
+            });
         });
-        // $('.del').click(function () {
-        //     var filename = $(this).parent().attr('filename');
-        //     $.ajax({
-        //         url: '/del',
-        //         type: 'post',
-        //         data: {'filename':filename},
-        //         success: function  (data) {
-
-        //         }
-        //     })
-        // })
-    })
+        function rename(old, newname) {
+            if(newname != ''){
+                $.ajax({
+                    url: '/rename/' + old + '/' + newname,
+                    type: 'get',
+                    success: function(data){
+                        if(data == 'ok'){
+                            window.location.reload();
+                        }else{
+                            toastr.error('文件不存在或已被删除')
+                        }
+                    }
+                })
+            }
+        }
     </script>
     <style>
-        .container{
+        .container {
             position: relative;
             padding-top: 5%;
-	    padding-left: 5%;
-	    padding-right: 5%;
+            padding-left: 2%;
+            padding-right: 2%;
         }
-    .info {
-        /*margin-left: 30%;*/
-        float: right;
-    }
 
-    .time {
-        margin-right: 5%;
-        float: right;
-    }
+        .list-group {
+            width: 120%;
+        }
 
-    .filename {
-        width: 30%;
-        margin-right: 10%;
-    }
+        .info {
+            /*margin-left: 30%;*/
+            float: right;
+        }
 
-    .oper {
-        position: fixed;
-        top: 10%;
-        left: 1%;
-        z-index: 999;
-    }
-    .oper button {
-        margin: 5px;
-    }
+        .time {
+            margin-right: 5%;
+            float: right;
+        }
 
-    li {
-        position: relative;
-    }
+        .filename {
+            width: 30%;
+            margin-right: 10%;
+        }
 
-    .delbtn {
-        position: absolute;
-        left: 35%;
-        top: 3px;
-    }
+        .oper {
+            position: fixed;
+            top: 10%;
+            left: 1%;
+            z-index: 999;
+        }
+
+        .oper button {
+            margin: 5px;
+        }
+
+        li {
+            position: relative;
+        }
+
+        .delbtn {
+            position: absolute;
+            left: 35%;
+            top: 3px;
+        }
+
+        #imgs {
+            width: 50%;
+            height: 50%;
+            position: absolute;
+            top:20%;
+            left: 20%;
+        }
     </style>
 </head>
 
 <body>
+    <div id="imgs"></div>
     <div class="container">
         <div class="oper">
             <h3>文件列表</h3>
             <a href="/" title="">
                 <button class="btn btn-primary">回到首页</button>
             </a><br>
-            <button id='btn' class="btn btn-success">刷新一下</button></div>
-            <ul class="list-group">
-                {% for file in file_list %}
-                    <li class="list-group-item" filename="{{ file[0] }}">
-                        <span class="filename">{{ file[0] }} </span>
-                        <div class="delbtn">
-			    <a href="{{ url_for('download',filename= file[0]) }}" methods="GET">
-				<button class="btn btn-success del">下载</button>
-                            </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href='/open/{{ file[0] }}'>
-                                <button class="btn btn-error del">打开</button>
-                            </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <a href='/del/{{ file[0] }}'>
-                                <button class="btn btn-danger del">删除</button>
-                            </a>
-                        </div>
-                        <span class="time">{{ file[1] }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
+            <button id='btn' class="btn btn-success">刷新一下</button>
+        </div>
+        <ul class="list-group">
+            {% for file in file_list %}
+            <li class="list-group-item" imgid='img{{loop.index}}' filename="{{ file[0] }}">
+                <span class="filename">{{ file[0] }} </span>
+                {% if file[2] %}
+                <!-- <script>
+                    var img = document.createElement('img');
+                    img.src = "data:image/{{file[3]}};base64,{{file[2]}}";
+                    img.id = 'img{{loop.index}}'
+                    img.zIndex = 99999;
+                    // img.hidden = 'hidden'
+                    $('#imgs')[0].appendChild(img);
+                </script> -->
+                <img class="thum" hidden='hidden' src="data:image/{{file[3]}};base64,{{file[2]}}" >
+                <!--width="20px" height="20px"-->
+                {% endif %}
+                <div class="delbtn">
+                    <a href="{{ url_for('download',filename= file[0]) }}" methods="GET">
+                        <button class="btn btn-success del">下载</button>
+                    </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href='/open/{{ file[0] }}'>
+                        <button class="btn btn-error del">打开</button>
+                    </a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button class="dw-btn btn-warning has-hover del"
+                onclick="javascript:$('body').dialog({type:'danger',title:'输入新的文件名：',discription:'rename',isInput:true,inputPlaceholder:'{{file[0]}}',animateIn:'rotateInUpLeft-hastrans',animateOut:'rotateOutUpLeft-hastrans'},function(ret) {if(ret.index===0){rename('{{file[0]}}', ret.input.value);}})">重命名</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href='/del/{{ file[0] }}'>
+                        <button class="btn btn-danger del">删除</button>
+                    </a>
+                </div>
+                <span class="time">{{ file[1] }}</span>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </body>
 <script>
@@ -104,4 +156,5 @@
     toastr.info("{{ msg }}");
     {% endif %}
 </script>
+
 </html>
