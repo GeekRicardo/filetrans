@@ -16,6 +16,9 @@ from model import app, User, db, Msg
 
 import datetime  # , random
 
+from datetime import timedelta
+
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=5)
 app.secret_key = 's82;asdf4idsdf'
 app.config['SESSION_TYPE'] = 'filesystem'
 
