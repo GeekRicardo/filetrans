@@ -16,16 +16,16 @@
                 location.reload();
             });
             $('.list-group-item').mouseover(function(e){
-                // var next = $('#' + $(this).attr('imgid'));
-                var next = $(this).children('img');
+                var next = $('#' + $(this).attr('imgid'));
+                // var next = $(this).children('img');
                 console.log(next[0].tagName);
                 if(next[0].tagName == 'IMG'){
                     next.removeAttr('hidden');
                 }
             });
             $('.list-group-item').mouseout(function(e){
-                // var next = $('#' + $(this).attr('imgid'));
-                var next = $(this).children('img');
+                var next = $('#' + $(this).attr('imgid'));
+                // var next = $(this).children('img');
                 if(next[0].tagName == 'IMG'){
                     next.attr('hidden', 'hidden');
                 }
@@ -122,15 +122,17 @@
             <li class="list-group-item" imgid='img{{loop.index}}' filename="{{ file[0] }}">
                 <span class="filename">{{ file[0] }} </span>
                 {% if file[2] %}
-                <!-- <script>
+                <script>
                     var img = document.createElement('img');
                     img.src = "data:image/{{file[3]}};base64,{{file[2]}}";
                     img.id = 'img{{loop.index}}'
                     img.zIndex = 99999;
-                    // img.hidden = 'hidden'
-                    $('#imgs')[0].appendChild(img);
-                </script> -->
-                <img class="thum" hidden='hidden' src="data:image/{{file[3]}};base64,{{file[2]}}" >
+                    img.style = "position: absolute;top: 10%;left: 30%;"
+                    img.hidden = 'hidden'
+                    // $('#imgs')[0].appendChild(img);
+                    $('body')[0].appendChild(img);
+                </script>
+                <!-- <img class="thum" hidden='hidden' src="data:image/{{file[3]}};base64,{{file[2]}}" > -->
                 <!--width="20px" height="20px"-->
                 {% endif %}
                 <div class="delbtn">
