@@ -291,7 +291,7 @@ def get_uuid():
         return render_template('msg.html', msg=md5_uuid)
     elif request.method == 'POST':
         return jsonify({
-            'timestamp': time.time()[:11],
+            'timestamp': str(time.time())[:10],
             'uuid': md5_uuid
         })
 
